@@ -5,18 +5,16 @@ import { TasksService } from "./tasks.service";
 import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from "@nestjs/common";
 import { Task } from './task.entity';
 import { DeleteResult } from 'typeorm';
+import { TaskStatus } from './task-status.enum';
 
 @Controller("tasks")
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
-  // @Get()
-  // getTasks(@Query(ValidationPipe) filterDto: GetTaskFilterDto): Task[] {
-  //   if(Object.keys(filterDto).length){
-  //     return this.tasksService.getTaskByFilter(filterDto);
-  //   }
-  //   return this.tasksService.getAllTasks();
-  // }
+  @Get()
+  getTasks(@Query(ValidationPipe) filterDto: GetTaskFilterDto) {
+    return this.tasksService.getTasks(filterDto);
+  }
 
   @Get("/:id")
   getTaskById(@Param("id", ParseIntPipe) id: number): Promise<Task> {
@@ -30,14 +28,14 @@ export class TasksController {
     return this.tasksService.createTask(createTaskDto);
   }
 
-  // @Patch('/:id/status')
-  // updateStatusTask(
-  //   @Param('id') id: string,
-  //   @Body('status', TaskStatusValidationPipe) status: string
-  // ): Task{
-  //   const statusTask: TaskStatus = TaskStatus[status];
-  //   return this.tasksService.updateStatus(id, statusTask);
-  // }
+  @Patch('/:id/status')
+  updateStatusTask(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status', TaskStatusValidationPipe) status: string
+  ): Promise<Task>{
+    const statusTask: TaskStatus = TaskStatus[status];
+    return this.tasksService.updateStatus(id, statusTask);
+  }
 
   @Delete('/:id')
   deleteTaskById(@Param('id', ParseIntPipe) id: number): Promise<void>{

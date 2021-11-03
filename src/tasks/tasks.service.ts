@@ -14,12 +14,6 @@ export class TasksService {
     private taskRepository: TaskRepository,
   ){}
 
-  
-
-  // getAllTasks(): Task[] {
-  //   return this.tasks;
-  // }
-
   async getTaskById(id: number): Promise<Task> {
     const found = await this.taskRepository.findOne(id);
     
@@ -28,6 +22,10 @@ export class TasksService {
     }
     return found;
 
+  }
+
+  async getTasks(filterDto: GetTaskFilterDto): Promise<Task[]>{
+    return this.taskRepository.getTasks(filterDto);
   }
 
   // getTaskByFilter(filterDto: GetTaskFilterDto): Task[] {
@@ -60,9 +58,10 @@ export class TasksService {
     }
   }
 
-  // updateStatus(id: string, status: TaskStatus): Task{
-  //   const task = this.getTaskById(id);
-  //   task.status = status;
-  //   return task;
-  // }
+  async updateStatus(id: number, status: TaskStatus): Promise<Task>{
+    const task = await this.getTaskById(id);
+    task.status = status;
+    await task.save();
+    return task;
+  }
 }
