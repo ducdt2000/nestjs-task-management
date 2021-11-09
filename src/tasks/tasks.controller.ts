@@ -4,7 +4,6 @@ import { CreateTaskDto } from "./dto/create-task.dto";
 import { TasksService } from "./tasks.service";
 import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from "@nestjs/common";
 import { Task } from './task.entity';
-import { DeleteResult } from 'typeorm';
 import { TaskStatus } from './task-status.enum';
 
 @Controller("tasks")

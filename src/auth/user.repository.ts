@@ -1,3 +1,6 @@
+import { TaskRepository } from './../tasks/task.repository';
+import { RoleRepository } from './../role/role.repository';
+import { AuthRegisterDto } from './dto/auth-register.dto';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { EntityRepository } from 'typeorm';
 import { Repository } from 'typeorm';
@@ -7,11 +10,20 @@ import { ConflictException, InternalServerErrorException } from '@nestjs/common'
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User>{
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void>{
-    const {username, password} = authCredentialsDto; 
+
+  async getUsers(): Promise<User[]>{
+    const users = await this.find();
+    return users;
+  }
+
+  async signUp(authRegisterDto: AuthRegisterDto): Promise<void>{
+    const {username, password, roleId, role} = authRegisterDto; 
 
     const user = new User();
+
     user.username = username;
+    user.roleId = roleId;
+    user.role = role;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
 
